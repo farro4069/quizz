@@ -1,5 +1,5 @@
 :root {
-	background: #ecf5ff;
+	background: #cac57a;
 	/*font-size: 62.5%;*/
 }
 
@@ -12,15 +12,31 @@
 
 body {
 	font-family: Arial, Helvetica, sans-serif;
-	color: #333;
+	color: #56a5eb;
 }
 
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	margin: 0.5rem;
+	width: 10vw;
+	height: 10vw;
+	background: #eee url('favicon_io/poor_giraffe.png');
+	border-radius: 50%;
+	background-size: cover;
+}
 
+footer {
+	position: fixed;
+	bottom: 0;
+	margin: 0.5em;
+}
 
 h1, h2 {
 	margin-bottom: 4em;
 	font-size: 2rem;
-	color: #33f;
+	color: inherit;
 }
 
 .container {
@@ -59,7 +75,7 @@ h1, h2 {
 .answer-choice p {
 	width: 100%;
 	padding: 0.5em;
-	text-transform: capitalize;
+	text-transform: none;
 }
 
 .hidden {
@@ -67,17 +83,16 @@ h1, h2 {
 }
 
 .score {
-	color: #ddd;
 	text-align: center;
-	font-size: 4em;
+	font-size: 3.5em;
 }
 
 .wrong {
-	background: #dc3545;
+	background: #e35a5a;
 }
 
 .correct {
-	background: #28a745;
+	background: #4ab751;
 }
 
 .progress__bar {

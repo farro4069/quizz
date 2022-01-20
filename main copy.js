@@ -1,4 +1,4 @@
-console.log('category', document.URL.substring(57));
+console.log('Quick quiz');
 let acceptingAnswers = false;
 let score = 0;
 let questionNumber = 0;
@@ -10,12 +10,8 @@ const question = document.querySelector('.question h2');
 const multiChoice = document.querySelectorAll('.answer-choice');
 const multiChoiceAnswers = document.querySelectorAll('.answer-choice p');
 const playAgain = document.querySelector('.start');
-let loadedQuestions = [];
 let allQuestions = [];
 let sampleQuestion = [];
-let formattedQuestion = [];
-let currentQuestion;
-let newQuestions = [];
 
 
 
@@ -23,26 +19,18 @@ let newQuestions = [];
 
 function play() {
 	progressBar.style.width = `${(questionNumber - 1)/maxQuestions*100}%`;
-	scorePad.innerText = `Score ${score}`;
-	question.innerText = `${questionNumber}. ${currentQuestion.question}`
-		.replace(/&#039;/g, "'")
-		.replace(/&rsquo;/g, "'")
-		.replace(/&quot;/g, "'");
+	scorePad.innerText = `Score ${score} / ${questionNumber}`;
+	question.innerText = currentQuestion.question;
 	multiChoiceAnswers.forEach(choice => {
 		const idx = choice.parentNode.dataset['number'];
-		choice.innerText = currentQuestion.possible[idx - 1]
-			.replace(/&#039;/g, '')
-			.replace(/&rsquo;/g, "'")
-			.replace(/&amp;/g, '&');
+		choice.innerText = currentQuestion.possible[idx - 1];
 	})
-	console.log('Correct', currentQuestion.answer);
 }
 
 function guess(e) {
 	if (!acceptingAnswers) {
 		return;
 	} else {
-		console.log(questionNumber, e.target.parentNode.dataset.number, currentQuestion.answer)
 		if (e.target.parentNode.dataset.number == currentQuestion.answer) {
 			score++;
 			classToApply = 'correct';
@@ -58,11 +46,11 @@ function guess(e) {
 }
 
 function getNewQuestion() {
-	if (questionNumber < allQuestions.length && questionNumber < maxQuestions) {
+	if (questionNumber < sampleQuestion.length && questionNumber < maxQuestions) {
 		questionNumber++;
-		questionIndex = Math.floor(Math.random() * allQuestions.length);
-		currentQuestion = allQuestions[questionIndex];
-		allQuestions.splice(questionIndex, 1);
+		questionIndex = Math.floor(Math.random() * sampleQuestion.length);
+		currentQuestion = sampleQuestion[questionIndex];
+		sampleQuestion.splice(questionIndex, 1);
 		acceptingAnswers = true;
 		play();
 	} else {
@@ -93,32 +81,16 @@ function startOver() {
 
 // ***************************************** Initial call **************
 
-// category=9 (General), Science - 17 , History -23
-
-const category = document.URL.substring(document.URL.search('cat')+4);
-const endPoint = `https://opentdb.com/api.php?amount=30&category=${category}&type=multiple`
-
-fetch(endPoint)
+fetch('millionnaire.json')
 	.then (response => response.json())
-	.then (loadedQuestions => {
-		loadedQuestions.results.map(loadedQuestion => {
-			const answerChoices = [ ...loadedQuestion.incorrect_answers];
-			const correctAnswer = Math.floor(Math.random() * 4) + 1;
-			answerChoices.splice(correctAnswer - 1, 0, loadedQuestion.correct_answer)
-			newQuestions = {
-				question: loadedQuestion.question, 
-				possible: answerChoices,
-				answer: correctAnswer
-				};
-			allQuestions.push(newQuestions);
-
-		});
+	.then (data => {
+		allQuestions = data;
+		sampleQuestion = [...allQuestions];
 		startGame();
-	})
-
-
+	});
 
 
 // ****************** Event listeners **********************************
 
 multiChoiceAnswers.forEach(c => c.addEventListener('click', guess));
+playAgain.addEventListener('click', startOver);
